@@ -23,15 +23,21 @@ def renamefile(path,file,newname):
 def removefile(file,path,dir):
     shutil.copyfile(path + '\\' + file, dir + '\\' + file)
 
+def dealfile(path,newpath):
+    for file in os.listdir(path):
+        if os.path.isdir(os.path.join(path,file)):
+            dealfile(os.path.join(path,file),newpath)
+        elif os.path.isfile(os.path.join(path, file)):
+            newname = getExif(os.path.join(path, file))
+            dir = os.path.join(newpath, newname[0:6])
+            if not os.path.isdir(dir):
+                os.makedirs(dir)
+            removefile(file, path, dir)
+            renamefile(dir, file, newname)
+
 if __name__ == '__main__':
     #path='D:\\Projects\\python\\lyy\\pic'
     path='C:\\Users\\lyy\\Desktop\\picture\\dir'
+    newpath='C:\\Users\\lyy\\Desktop\\picture\\newpath'
+    dealfile(path,newpath)
 
-    for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path,file)):
-            newname=getExif(os.path.join(path,file))
-            dir=os.path.join(path,newname[0:6])
-            if not os.path.isdir(dir):
-                os.makedirs(dir)
-            removefile(file,path,dir)
-            renamefile(dir,file,newname)
