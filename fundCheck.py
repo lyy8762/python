@@ -1,12 +1,18 @@
 import requests
 import re
-url = 'http://cfh.igoldenbeta.com/cfh-web/cfh/beta/list?market=0&sort=MZ'
+par={'market':'0','sort':'MZ'}
+url = 'http://cfh.igoldenbeta.com/cfh-web/cfh/beta/list'
 
-response=requests.get(url)
-print(response.status_code)
-print(type(response.text))
-print(response.text)
+response=requests.get(url,params=par)
+print(response.json())    #dict  用着不错
+print(type(response.json()))
+print(response.text)    #string
 print(response.cookies)
-print(type(response.content))
+print(type(response.content))   #bytes 需要解码
 print(response.content.decode("utf-8"))
+print(response.json()['data']['list'][1])  # dict list 访问方式，dict {} 使用key访问，list []  使用index访问
+
+list1=response.json()['data']['list']       #list的循环访问
+for s in list1:
+    print(s['name'])
 
