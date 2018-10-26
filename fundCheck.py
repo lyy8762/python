@@ -1,14 +1,16 @@
+# -*- coding:UTF-8 -*-
 import requests
-import re
+
 par={'market':'0','sort':'MZ'}
 url = 'http://cfh.igoldenbeta.com/cfh-web/cfh/beta/list'
 
 response=requests.get(url,params=par)
-print(response.json())    #dict  用着不错
+
+print(response.json())    #dict
 print(type(response.json()))
 print(response.text)    #string
 print(response.cookies)
-print(type(response.content))   #bytes 需要解码
+print(type(response.content))   #bytes
 print(response.content.decode("utf-8"))
 print(response.json()['data']['list'][1])  # dict list 访问方式，dict {} 使用key访问，list []  使用index访问
 
