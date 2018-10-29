@@ -44,7 +44,7 @@ try:
     fp1 = open(loginFile, "r")
     fp2 = open(hostFile, "r")
 except IOError:
-    print "Error: open file failed"
+    print("Error: open file failed")
 loginlist = [login.strip('\n').rstrip() for login in fp1.readlines()]
 hostlist = [host.strip('\n').rstrip() for host in fp2.readlines()]
 sid = ''

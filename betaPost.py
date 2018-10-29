@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import random
-import sys
 
-
-reload(sys)
-sys.setdefaultencoding('utf-8')
 import time
 import urllib
 import urllib2
@@ -98,15 +94,15 @@ class Beta_Service(object):
             request.add_header('Cookie', val='JSESSIONID=' + sid)
             request.add_header('Accept-Encoding', 'gzip')
             request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=utf-8')
-            print urllib.urlencode(post_data)
+            print (urllib.urlencode(post_data))
             request.add_data(urllib.urlencode(post_data))
 
         response = urllib2.urlopen(request)
         json_str = response.read()
-        print response.read
+        print (response.read)
 
-        print "你好"
-        print json_str
+        print ("你好")
+        print (json_str)
         return json_str
 
 

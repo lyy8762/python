@@ -2,6 +2,7 @@
 #爬取豆瓣读书上的一些书目信息
 
 from lxml import etree
+from lxml import html
 import requests
 from chardet import detect
 
@@ -14,9 +15,9 @@ books = tree.xpath('//div[@class="section popular-books"]/div[@class="bd"]/ul/li
 for book in books:
     title = book.xpath('.//div[@class="info"]/h4/a')[0].text.strip()
     author = book.xpath('.//div[@class="info"]/p[@class="author"]/text()')[0] .strip()
-    print u'《', title, u'》', '\t', '--' + author
+    print (u'《', title, u'》', '\t', '--' + author)
 
-print '\n'
+print ('\n')
 
 #获取新书速递模块的图书 （是四个list 下面又有list 两个for循环）
 lists = tree.xpath('//div[@class="section books-express "]/div[@class="bd"]/div/div/ul')
@@ -25,5 +26,5 @@ for list in lists:
     for book2 in books2:
         title2 = book2.xpath('.//div[@class="info"]/div[@class="title"]/a')[0].text.strip()
         author2 = book2.xpath('.//div[@class="info"]/div[@class="author"]/text()')[0].strip()
-        print u'《', title2, u'》', '\t', '--' + author2
-    print '\n'
+        print (u'《', title2, u'》', '\t', '--' + author2)
+    print( '\n')

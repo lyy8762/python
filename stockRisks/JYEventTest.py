@@ -3,10 +3,10 @@
 import pymssql
 import cx_Oracle
 import mysql.connector
-import sys
+#import sys
 
-reload(sys)
-sys.setdefaultencoding('utf-8')
+#reload(sys)
+#sys.setdefaultencoding('utf-8')
 
 # 源数据库--SQL Server
 connJY = pymssql.connect(host='10.31.90.170', user='jydev', password='jydev',
@@ -17,9 +17,9 @@ cursorJY = connJY.cursor()
  #db = cx_Oracle.connect(username/passwd@host:port/sevicename)
 constring = "monitor/monitor_123@10.31.90.170:30011/WINDDB"
 
-#connWD = cx_Oracle.connect('monitor/monitor_123@10.31.90.170:30011/winddb')
-#connWD = cx_Oracle.connect(constring)
-#cursorWD = connWD.cursor()
+connWD = cx_Oracle.connect('monitor/monitor_123@10.31.90.170:30011/winddb')
+connWD = cx_Oracle.connect(constring)
+cursorWD = connWD.cursor()
 #本地---mySql
 #connJBT = mysql.connector.connect(host='10.31.90.118',user='root',password='!2D#34S3aA$', database='jsfund_sms_dev',port='3306',charset='utf8')
 #cursorJBT = connJBT.cursor()
@@ -48,36 +48,38 @@ sqlStr021 = 'select count(*) from lc_balancesheetnew where InfoPublDate>\'2018-0
 # 20003 净资产  20009营业收入  20024 经营性现金流  20025 应收账款--JY
 sqlStr03 = 'select CompanyCode,SEWithoutMI,OperatingReenue, NetOperateCashFlow, AccountReceivables,InfoPublDate,EndDate,InfoSource,Mark from (SELECT max(id) id FROM lc_maindatanew where EndDate>\'2018-01-01 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode) t inner join lc_maindatanew b ON t.id=b.id ORDER BY b.CompanyCode'
 # 20004 违规行为--JY
-sqlStr04 = 'SELECT CompanyCode,COUNT(ID) FROM lc_deregulation where AdminInst in(6,7,8)  and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)and InfoPublDate> \'2018-05-10 00:00:00\' and InfoPublDate<\'2018-09-08 00:00:00\' GROUP BY CompanyCode'
+sqlStr04 = 'SELECT CompanyCode,COUNT(ID) FROM lc_deregulation where AdminInst in(6,7,8)  and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)and InfoPublDate> \'2016-05-10 00:00:00\' and InfoPublDate<\'2018-09-08 00:00:00\' GROUP BY CompanyCode'
 
-sqlStr041 = 'SELECT * FROM `event-data-jy`.lc_deregulation where AdminInst in(6,7,8) and CompanyCode =\'50316\' and InfoPublDate>= DATE_ADD(\'2018-09-08 00:00:00\',INTERVAL - 1 MONTH) order by InfoPublDate desc'
 
 # 20005业绩预告--JY
-sqlStr05 = ' SELECT CompanyCode,COUNT(*) FROM  lc_performanceforecast where Forcasttype in(1,7,8,18) and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  and InfoPublDate>\'2018-05-10 00:00:00\' and InfoPublDate<\'2018-08-07 00:00:00\' GROUP BY CompanyCode'
+sqlStr05 = ' SELECT CompanyCode,COUNT(*) FROM  lc_performanceforecast where Forcasttype in(1,7,8,18) and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  and InfoPublDate>\'2016-05-10 00:00:00\' and InfoPublDate<\'2018-08-07 00:00:00\' GROUP BY CompanyCode'
 # 20006 财务审计意见--JY
 sqlStr06 = '  SELECT companycode,COUNT(ID) FROM lc_auditopinion where  EndDate>\'2016-12-01 00:00:00\' and InfoSource = \'年度报告\' and CompanyCode  in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)    GROUP BY CompanyCode order by CompanyCode '
 #20007 退市风险状态--JY
 sqlStr07='select InnerCode,InfoPublDate,SecurityAbbr,SpecialTradeType from (SELECT max(id) id FROM lc_specialtrade where InnerCode in(select innercode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY InnerCode) t inner join lc_specialtrade b ON t.id=b.id ORDER BY b.InnerCode'
 # 20008 资产负债率、 20011 带息债务/全部投入资本--JY
-sqlStr08 = ' select CompanyCode,DebtAssetsRatio,InteBearDebtToTotalCapital,EndDate from (SELECT max(id) id FROM lc_mainindexnew where EndDate>\'2017-01-01 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode) t inner join lc_mainindexnew b ON t.id=b.id ORDER BY b.CompanyCode'
+sqlStr08 = ' select CompanyCode,DebtAssetsRatio,InteBearDebtToTotalCapital,EndDate from (SELECT max(id) id FROM lc_mainindexnew where EndDate>\'2016-01-01 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode) t inner join lc_mainindexnew b ON t.id=b.id ORDER BY b.CompanyCode'
 # 20010 资产负债率--JY
-sqlStr10 = 'select CompanyCode,InfoPublDate,InfoSource,EndDate,Mark,NetProfit from (SELECT max(id) id FROM LC_QIncomeStatementNew where EndDate>\'2017-01-01 00:00:00\' and CompanyCode in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode) t inner join LC_QIncomeStatementNew b ON t.id=b.id ORDER BY b.CompanyCode '
+sqlStr10 = 'select CompanyCode,InfoPublDate,InfoSource,EndDate,Mark,NetProfit from (SELECT max(id) id FROM LC_QIncomeStatementNew where EndDate>\'2016-01-01 00:00:00\' and CompanyCode in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode) t inner join LC_QIncomeStatementNew b ON t.id=b.id ORDER BY b.CompanyCode '
 # 20013 股权解禁数量--JY
-sqlStr13='SELECT * FROM lc_sharesfloatingschedule where StartDateForFloating <= \'2018-09-14 00:00:00\'   and StartDateForFloating >= \'2018-08-14 00:00:00\' and CompanyCode  in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)   order by CompanyCode'
+sqlStr13='SELECT CompanyCode ,NewMarketableAShares,TotalAShares ,AccuMarketableAShares ,NonMarketableAShares  FROM lc_sharesfloatingschedule where StartDateForFloating <= \'2018-10-26 00:00:00\'   and StartDateForFloating >= \'2018-09-26 00:00:00\' and CompanyCode  in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)   order by CompanyCode'
 # 20015 平仓风险--JY
 sqlStr31 = 'SELECT * FROM lc_greatevents where InfoSource like \'%平仓%\' and InfoSource not like \'%消除%\' and InfoSource not like \'%解除%\' and  InfoSource not like \'%交易平仓%\' and    InfoPublDate> \'2018-07-06 00:00:00\'   ORDER BY InfoPublDate DESC  '
-sqlStr15 = '  SELECT COUNT(*)  FROM lc_relatedtrade where TradeType in (9,10,11) and InfoPublDate>= \'2018-01-01 00:00:00\' and InfoPublDate<= \'2018-08-07 00:00:00\'  '
+sqlStr15 = '  SELECT COUNT(*)  FROM lc_relatedtrade where TradeType in (9,10,11) and InfoPublDate>= \'2016-01-01 00:00:00\' and InfoPublDate<= \'2018-10-07 00:00:00\'  '
 # 20016 关联资产注入（剥离）行为--JY
-sqlStr16 = 'SELECT CompanyCode,COUNT(ID)  FROM lc_relatedtrade where InfoPublDate>\'2018-05-10 00:00:00\' and TradeType in (9,10,11) and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode ORDER BY CompanyCode'
+sqlStr16 = 'SELECT CompanyCode,COUNT(ID)  FROM lc_relatedtrade where InfoPublDate>\'2016-05-10 00:00:00\' and TradeType in (9,10,11) and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode ORDER BY CompanyCode'
 # 20017 关联交易次数--JY
 sqlStr171 = 'SELECT * FROM  lc_relatedtrade where  CompanyCode = 75 and InfoPublDate>\'2018-05-10 00:00:00\' '
 sqlStr17 = 'select CompanyCode,COUNT(ID) from lc_relatedtrade where InfoPublDate>\'2018-05-10 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode ORDER BY CompanyCode'
 # 20018 并购次数--JY
-sqlStr18 = ' SELECT CompanyCode,COUNT(ID)  FROM lc_merger where Initialinfopubldate >\'2018-05-10 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode ORDER BY CompanyCode'
+sqlStr18 = ' SELECT CompanyCode,COUNT(ID)  FROM lc_merger where Initialinfopubldate >\'2018-08-10 00:00:00\' and CompanyCode in(select companycode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY CompanyCode ORDER BY CompanyCode'
 #20021 20022 冻结解冻股数--JY
 sqlStr21='SELECT CompanyCode,count(*) FROM lc_sharefp where TypeSelect = 2 and CompanyCode in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)   GROUP BY CompanyCode order by CompanyCode'
 #20023 诉讼仲裁金额--JY
 sqlStr23='SELECT CompanyCode,count(*) FROM lc_suitarbitration where InfoPublDate>  \'2018-07-14 00:00:00\' and CompanyCode in(select CompanyCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1) GROUP BY CompanyCode order by CompanyCode'
+
+sqlStr231='SELECT CompanyCode,count(*) FROM lc_suitarbitration where InfoPublDate>  \'2016-07-14 00:00:00\' and CompanyCode in(264) GROUP BY CompanyCode'
+
 #20026 股本复权系数--JY
 sqlStr26='SELECT InnerCode,count(*) FROM  LC_Dividend where InnerCode in(select InnerCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  and (Bonusshareratio is not null or Tranaddshareraio is not null) GROUP BY InnerCode order by InnerCode'
 sqlStr261=' select count(*) from (SELECT max(id) id FROM LC_Dividend where InnerCode in(select InnerCode from secumain where secucategory=1 and secumarket in(83,90) and listedstate=1)  GROUP BY InnerCode) t inner join LC_Dividend b ON t.id=b.id'
@@ -96,16 +98,16 @@ sqlStr28="select * from WIND.TB_OBJECT_5004 where F16_1090 = '000100'"
 sqlStr99="select COLUMN_NAME,DATA_TYPE,DATA_LENGTH from user_tab_cols where table_name= \"stocknegativenews\""
 sql111='SELECT * FROM lc_sharesfloatingschedule where JSID = 590569630835'
 
-cursorJY.execute(sql111)
-result = cursorJY.fetchall()
+#cursorJY.execute(sqlStr23)
+#result = cursorJY.fetchall()
 
-#cursorWD.execute(sqlStr99)
-#result = cursorWD.fetchall()
+cursorWD.execute(sqlStr27)
+result = cursorWD.fetchall()
 
-print len(result)
+print(len(result))
 # 打印所有记录
 for i in result:
-    print i
+    print (i)
     #print i[0].decode('gbk') +', ' +str(i[1])  #对20014 有不识别的编码输出时
 
 
